@@ -1,0 +1,38 @@
+stages:
+  - review
+
+code_review:
+  stage: review
+  image: python:3.11
+  before_script:
+    - apt-get update && apt-get install -y git
+    - pip install requests
+
+  script:
+    - echo "[i] Клонируем GitHub репозиторий"
+    - git clone --branch feature/adapters https://github.com/artemd24/ai-code-review.git
+    - cd ai-code-review
+
+    - pip install -r requirements.txt || echo "[!] Нет requirements.txt — пропускаю"
+
+    - echo "[i] Запуск Code Review Bot"
+    - |
+      python main.py \
+        --adapter gitlab \
+        --model open-ai \
+        --level FULL \
+        --url https://gitlab.com \
+        --project-id $CI_PROJECT_ID \
+        --mr-iid $CI_MERGE_REQUEST_IID \
+        --token $GITLAB_TOKEN \
+        --api-key $OPENROUTE_API_KEY \
+      || echo "[!] Code Review завершился с ошибкой, но pipeline не падает"
+
+  variables:
+    OPENROUTE_API_KEY: $OPENROUTE_API_KEY
+    GITLAB_TOKEN: $GITLAB_TOKEN
+
+  only:
+    - merge_requests
+
+  allow_failure: true

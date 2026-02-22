@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - 27018:27017
+    volumes:
+      - $HOME/data/mongo-data:/data/db
+      - $HOME/data/mongo-bkp:/data/bkp
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 1234
+    restart: always
+
+  app:
+    image: runtime-image
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: Flat_Price_application
+    ports:
+      - 5000:5000
+    depends_on:
+      - mongo
