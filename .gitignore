@@ -1,0 +1,22 @@
+# IDE
+/.idea
+.idea
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+venv
+venv2
+
+# Environment variables
+.env
+*/.env
+
+# Histograms
+tmp/*
+
+api_code_review/
